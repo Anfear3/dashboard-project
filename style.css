@@ -1,0 +1,267 @@
+/* --- 1. Настройка переменных и базовые стили --- */
+
+:root {
+  /* Цвета из гайда */
+  --color-very-dark-grayish-blue: hsl(217, 19%, 35%);
+  --color-desaturated-dark-blue: hsl(214, 17%, 51%);
+  --color-grayish-blue: hsl(212, 23%, 69%);
+  --color-light-grayish-blue: hsl(210, 46%, 95%);
+
+  /* Шрифты из гайда */
+  --font-family-main: "Manrope", sans-serif;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+}
+
+/* Сброс и базовые настройки */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-main);
+  font-size: 13px;
+  background-color: var(--color-light-grayish-blue);
+  color: var(--color-desaturated-dark-blue);
+  line-height: 1.6;
+
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* --- 2. Мобильная верстка (по умолчанию) --- */
+
+.article-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  max-width: 345px; /* Чуть меньше 375, чтобы были отступы */
+  overflow: hidden; /* Скрываем все, что вылезает */
+  display: flex;
+  flex-direction: column;
+}
+
+.card-image img {
+  width: 100%;
+  height: 200px; /* Типичная высота для мобильной карточки */
+  object-fit: cover;
+  object-position: center top; /* Обычно так лучше */
+}
+
+.card-content {
+  padding: 32px 32px 20px;
+}
+
+.card-title {
+  font-size: 1.05rem; /* ~16px, угадано */
+  font-weight: var(--font-weight-bold);
+  color: var(--color-very-dark-grayish-blue);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.card-description {
+  font-weight: var(--font-weight-medium);
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 32px 20px;
+  position: relative; /* Для позиционирования меню */
+  transition: background-color 0.3s ease;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.author-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.author-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.author-name {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-very-dark-grayish-blue);
+}
+
+.post-date {
+  color: var(--color-grayish-blue);
+}
+
+.share-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-light-grayish-blue);
+  color: var(--color-desaturated-dark-blue);
+  display: grid;
+  place-items: center;
+  transition: all 0.2s ease;
+  z-index: 10; /* Чтобы кнопка была над меню */
+}
+
+/* --- 3. Активное состояние (Mobile) --- */
+/* JS будет добавлять/убирать класс .active на .social-menu.
+  На мобилке мы *не* хотим показывать "облачко". 
+  Мы хотим *заменить* футер.
+  Поэтому на мобилке .social-menu будет вести себя иначе.
+*/
+
+.social-menu {
+  display: none; /* По умолчанию скрыто везде */
+  align-items: center;
+  gap: 12px;
+}
+
+/* Класс .footer-active будет добавляться на .card-footer 
+  (нужно будет допилить JS, или можно обойтись CSS, но грязнее)
+  
+  Давай допилим JS, это чище.
+*/
+
+/* --- 4. Десктопная верстка (по догадке) --- */
+
+/* --- Стили для мобильного JS --- */
+
+/* На мобилке меню занимает всю ширину футера */
+.social-menu {
+  display: none; /* Все еще скрыто по умолчанию */
+  width: 100%;
+  justify-content: flex-start;
+  gap: 16px;
+  padding-left: 32px; /* Выравниваем по контенту */
+}
+
+/* Когда JS добавляет .active */
+.social-menu.active {
+  display: flex;
+}
+
+/* Когда JS добавляет .footer-active-mobile */
+.card-footer.footer-active-mobile {
+  background-color: var(--color-very-dark-grayish-blue);
+
+  /* Выравниваем кнопку по-другому */
+  justify-content: space-between;
+  padding: 12px 32px 20px;
+}
+
+/* Иконки соцсетей (нужно будет заменить на твои SVG) */
+.social-menu span {
+  color: var(--color-grayish-blue);
+  letter-spacing: 4px;
+}
+.social-menu a {
+  color: white; /* Пример */
+  text-decoration: none;
+}
+
+/* Активная кнопка на мобилке */
+.share-button.active-state {
+  background-color: var(--color-desaturated-dark-blue);
+  color: white;
+}
+
+@media (min-width: 768px) {
+  .article-card {
+    display: grid;
+    /* Вот она, сетка! 285px на картинку, остальное на контент */
+    grid-template-columns: 285px 1fr;
+    max-width: 730px;
+    overflow: visible; /* Нам нужно, чтобы облачко вылезало */
+  }
+
+  .card-image {
+    height: 100%;
+    border-radius: 10px 0 0 10px;
+    overflow: hidden;
+  }
+
+  .card-image img {
+    height: 100%; /* Растягиваем на всю высоту */
+  }
+
+  .card-content {
+    padding: 32px 40px 12px;
+  }
+
+  .card-title {
+    font-size: 1.25rem; /* ~20px */
+  }
+
+  .card-footer {
+    padding: 20px 40px 32px;
+  }
+
+  /* --- 5. Активное состояние (Desktop) --- */
+  /* Вот тут .social-menu становится тем самым "облачком"
+  */
+
+  .social-menu {
+    position: absolute;
+    background-color: var(--color-very-dark-grayish-blue);
+    color: var(--color-grayish-blue);
+    padding: 16px 35px;
+    border-radius: 8px;
+
+    /* Позиционирование (угадано) */
+    bottom: 95px; /* Над футером */
+    right: -80px; /* Правее кнопки */
+
+    letter-spacing: 4px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Класс .active (который ставит JS) теперь работает как надо */
+  .social-menu.active {
+    display: flex; /* Показываем облачко */
+  }
+
+  /* Тот самый "треугольник" снизу */
+  .social-menu::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: var(--color-very-dark-grayish-blue);
+    bottom: -10px; /* Сдвигаем вниз */
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    z-index: -1;
+  }
+
+  /* Когда меню активно, кнопка тоже "включается" */
+  .share-button.active-state {
+    background-color: var(--color-desaturated-dark-blue);
+    color: white;
+  }
+}
